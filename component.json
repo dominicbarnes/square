@@ -1,7 +1,7 @@
 {
   "name": "square",
   "repository": "dominicbarnes/square",
-  "description": "Serialize a JS object from form controls that use square-bracket notation",
+  "description": "Serialize a JS object from key/value pairs that use square-bracket notation",
   "keywords": [
     "square",
     "bracket",
