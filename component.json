@@ -1,0 +1,21 @@
+{
+  "name": "square",
+  "repository": "dominicbarnes/square",
+  "description": "Serialize a JS object from form controls that use square-bracket notation",
+  "keywords": [
+    "square",
+    "bracket",
+    "notation",
+    "serialize",
+    "form"
+  ],
+  "version": "0.0.1",
+  "development": {
+    "dependencies": {
+      "component/assert": "*"
+    }
+  },
+  "scripts": [
+    "index.js"
+  ]
+}
