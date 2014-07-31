@@ -119,6 +119,21 @@ describe("serializer.set(o, key, value)", function () {
         });
     });
 
+    it("should parse number keys as array indices", function () {
+        var o = {};
+        fn(o, "a[0][b]", 1);
+        fn(o, "a[1][b]", 2);
+        fn(o, "a[2][b]", 3);
+
+        assert.deepEqual(o, {
+            a: [
+                { b: 1 },
+                { b: 2 },
+                { b: 3 }
+            ]
+        });
+    });
+
     it("should work using the example in the readme", function () {
         var o = {};
         fn(o, "user[name]", "testuser");
