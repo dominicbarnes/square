@@ -1,44 +1,60 @@
-/*jshint boss:true */
 
 exports.parse = function (name) {
     return name.split("[").map(function (part) {
+        // strip the "]" from the string, it's not needed after the split
         part = part.replace(/\]$/, "");
+
+        // if the string is now empty, we're dealing with an array
         if (!part) return false;
+
+        // if the key is just numbers, parse it
         if (/^\d+$/.test(part)) return parseInt(part, 10);
+
+        // otherwise, return string key name
         return part;
     });
 };
 
 exports.set = function (o, key, value) {
-    var branches = exports.parse(key);
-    var current = o;
-    var leaf = branches.pop();
+    if (!o) o = {}; // create an empty object if needed
 
-    while (branch = branches.shift()) {
-        if (!(branch in current)) {
-            var nextKey = branches.length ? branches[0] : leaf;
-            current[branch] = (nextKey === false || typeof nextKey === "number") ? [] : {};
+    return exports.parse(key).reduce(function (acc, branch, x, branches) {
+        // while we are setting the various branches on our object
+        if (x + 1 < branches.length) {
+            // we need to see what key is coming next
+            var nextKey = branches[x + 1];
+
+            // when working with an array
+            if (branch === false) {
+                // first inspect the last item on the array
+                var temp = acc[acc.length - 1];
+
+                // if temp does not exist, or nextKey is not a part of temp
+                // we need to create a new container object to work with
+                if (!(nextKey && temp && !(nextKey in temp))) {
+                    temp = {};
+                    acc.push(temp);
+                }
+
+                return temp;
+            } else {
+                // when the branch does not already exist
+                if (!(branch in acc)) {
+                    // depending on nextKey, we may be setting an array or an object
+                    acc[branch] = (nextKey === false || typeof nextKey === "number") ? [] : {};
+                }
+
+                return acc[branch];
+            }
+        // the last iteration just sets a simple property / appends to an array
+        } else {
+            if (branch === false) {
+                acc.push(value);
+            } else {
+                acc[branch] = value;
+            }
+
+            return o;
         }
-
-        current = current[branch];
-    }
-
-    if (leaf && Array.isArray(current)) {
-        var temp = current[current.length - 1];
-
-        if (!temp || leaf in temp) {
-            temp = {};
-            current.push(temp);
-        }
-
-        current = temp;
-    }
-
-    if (leaf === false) {
-        current.push(value);
-    } else {
-        current[leaf] = value;
-    }
-
-    return o;
+    }, o);
 };

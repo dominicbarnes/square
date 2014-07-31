@@ -23,6 +23,11 @@ describe("serializer.parse(name)", function () {
         var keys = fn("tags[]");
         assert.deepEqual(keys, [ "tags", false ]);
     });
+
+    it("should parse keys into numbers if able", function () {
+        var keys = fn("a[0][1][2]");
+        assert.deepEqual(keys, [ "a", 0, 1, 2 ]);
+    });
 });
 
 describe("serializer.set(o, key, value)", function () {
@@ -130,6 +135,24 @@ describe("serializer.set(o, key, value)", function () {
                 { b: 1 },
                 { b: 2 },
                 { b: 3 }
+            ]
+        });
+    });
+
+    it("should handle weird combinations", function () {
+        var o = {};
+        fn(o, "a[0][b][]", 1);
+        fn(o, "a[0][b][]", 2);
+        fn(o, "a[1][b][]", 3);
+        fn(o, "a[1][b][]", 4);
+        fn(o, "a[2][b][]", 5);
+        fn(o, "a[2][b][]", 6);
+
+        assert.deepEqual(o, {
+            a: [
+                { b: [ 1, 2 ] },
+                { b: [ 3, 4 ] },
+                { b: [ 5, 6 ] }
             ]
         });
     });
