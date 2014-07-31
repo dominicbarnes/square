@@ -2,7 +2,10 @@
 
 exports.parse = function (name) {
     return name.split("[").map(function (part) {
-        return part.replace(/\]$/, "") || false;
+        part = part.replace(/\]$/, "");
+        if (!part) return false;
+        if (/^\d+$/.test(part)) return parseInt(part, 10);
+        return part;
     });
 };
 
@@ -14,7 +17,7 @@ exports.set = function (o, key, value) {
     while (branch = branches.shift()) {
         if (!(branch in current)) {
             var nextKey = branches.length ? branches[0] : leaf;
-            current[branch] = !!nextKey ? {} : [];
+            current[branch] = (nextKey === false || typeof nextKey === "number") ? [] : {};
         }
 
         current = current[branch];
@@ -31,7 +34,7 @@ exports.set = function (o, key, value) {
         current = temp;
     }
 
-    if (!leaf) {
+    if (leaf === false) {
         current.push(value);
     } else {
         current[leaf] = value;
