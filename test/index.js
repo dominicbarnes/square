@@ -157,6 +157,21 @@ describe("serializer.set(o, key, value)", function () {
         });
     });
 
+    it("should handle arrays with deep objects", function () {
+        var o = {};
+        fn(o, "a[][b][c]", 1);
+        fn(o, "a[][b][d]", 2);
+        fn(o, "a[][b][c]", 3);
+        fn(o, "a[][b][d]", 4);
+
+        assert.deepEqual(o, {
+            a: [
+                { b: { c: 1, d: 2 } },
+                { b: { c: 3, d: 4 } }
+            ]
+        });
+    });
+
     it("should work using the example in the readme", function () {
         var o = {};
         fn(o, "user[name]", "testuser");
