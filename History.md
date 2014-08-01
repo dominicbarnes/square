@@ -1,4 +1,7 @@
 
+# 0.0.4 (8/1/2014)
+ * accounting for another "edge-case" (eg: `key[][deep][properties]`)
+
 # 0.0.3 (7/31/2014)
  * refactored heavily to handle more edge-cases
 
