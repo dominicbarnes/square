@@ -1,6 +1,6 @@
 {
   "name": "dominicbarnes-square",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "devDependencies": {
     "component": "^1.0.0-rc5",
     "component-test": "^0.1.3"

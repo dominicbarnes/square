@@ -29,9 +29,7 @@ exports.set = function (o, key, value) {
                 // first inspect the last item on the array
                 var temp = acc[acc.length - 1];
 
-                // if temp does not exist, or nextKey is not a part of temp
-                // we need to create a new container object to work with
-                if (!(nextKey && temp && !(nextKey in temp))) {
+                if (!temp || branchesExist(temp, branches.slice(x + 1))) {
                     temp = {};
                     acc.push(temp);
                 }
@@ -58,3 +56,15 @@ exports.set = function (o, key, value) {
         }
     }, o);
 };
+
+function branchesExist(o, branches) {
+    var current = o;
+    return branches.every(function (branch) {
+        if (branch in current) {
+            current = current[branch];
+            return true;
+        } else {
+            return false;
+        }
+    });
+}
