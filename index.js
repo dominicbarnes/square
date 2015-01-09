@@ -20,10 +20,12 @@ exports.get = function(o, key, value) {
   if (!o) o = {}; // create an empty object if needed
 
   return exports.parse(key).reduce(function(acc, key) {
-    if (acc == undefined || key === false) {
+    if (acc === undefined || key === false) {
       return acc;
     } else if (isArray(acc)) {
-      return isNumber(key) ? acc[key] : acc.map(function(v) { return v[key]; });
+      return isNumber(key) ? acc[key] : acc.map(function(v) {
+        return v === undefined || v[key] === undefined ? undefined : v[key];
+      });
     } else if (acc[key] !== undefined) {
       return acc[key];
     } else {

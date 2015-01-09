@@ -117,6 +117,18 @@ describe('serializer.get(o, key)', function() {
     var ret = fn(o, 'tags[].age');
     assert.deepEqual(ret, [undefined, 32, undefined]);
   });
+
+  it('should not blow up on sparse nested gets', function() {
+    var o = { tags: [{ name: 'a' }, { name: 'b', type: { blood: 'o' } }, { name: 'c' }] };
+    var ret = fn(o, 'tags[].type.blood');
+    assert.deepEqual(ret, [undefined, 'o', undefined]);
+  });
+
+  it('... lets go even one step deeper', function() {
+    var o = { tags: [{ name: 'a', type: { blood: 'b' } }, { name: 'b', type: { blood: { value: 'o' } } }, { name: 'c' }] };
+    var ret = fn(o, 'tags[].type.blood.value');
+    assert.deepEqual(ret, [undefined, 'o', undefined]);
+  })
 });
 
 describe("serializer.set(o, key, value)", function () {
