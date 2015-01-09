@@ -54,6 +54,26 @@ Examples:
  * `contacts[][first]` => `[ "contacts", false, "first" ]`
  * `contacts[].last` => `[ "contacts", false, "last" ]`
 
+### square.get(obj, key)
+
+Get the value at `key` from `obj`.
+
+```js
+// get the value in a nested object
+var o = { user: { name: 'Matt' } };
+var ret = square.get(o, 'user.name');
+assert('Matt' == ret);
+
+// get a specific value from an array of objects
+var o = { tags: [{ name: 'a' }, { name: 'b' }, { name: 'c' }] };
+var ret = square.get(o, 'tags[1].name');
+assert.deepEqual(ret, 'b');
+
+// get an array of values from an array of objects
+var o = { tags: [{ name: 'a' }, { name: 'b' }, { name: 'c' }] };
+var ret = square.get(o, 'tags[].name');
+assert.deepEqual(ret, ['a', 'b', 'c']);
+```
 
 ### square.set(obj, key, value)
 

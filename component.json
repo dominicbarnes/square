@@ -1,5 +1,5 @@
 {
-  "name": "square",
+  "name": "squares",
   "repository": "dominicbarnes/square",
   "description": "Serialize a JS object from key/value pairs that use square-bracket notation",
   "keywords": [
@@ -9,7 +9,7 @@
     "serialize",
     "form"
   ],
-  "version": "0.0.4",
+  "version": "0.2.1",
   "development": {
     "dependencies": {
       "component/assert": "*"
