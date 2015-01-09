@@ -1,19 +1,22 @@
 # square
 
-A (cryptically-named) component that exposes the ability to serialize
-a JS object from a series of key/value pairs where the keys use
-square-bracket notation.
+A (cryptically-named) component that exposes the ability to serialize a JS
+object from a series of key/value pairs where the keys use square-bracket
+notation. (with some limited dot notation support)
+
+I'll be following this [spec](http://www.w3.org/TR/html-json-forms/), and if
+we start seeing browser support this library will follow that direction.
 
 ```html
 <form>
     <input type="text" name="user[name]" value="testuser">
-    <input type="password" name="user[password]" value="123456">
+    <input type="password" name="user.password" value="123456">
     <input type="text" name="tags[]" value="a">
     <input type="text" name="tags[]" value="b">
     <input type="text" name="contacts[][first]" value="test1">
     <input type="text" name="contacts[][last]" value="test2">
-    <input type="text" name="contacts[][first]" value="test3">
-    <input type="text" name="contacts[][last]" value="test4">
+    <input type="text" name="contacts[].first" value="test3">
+    <input type="text" name="contacts[].last" value="test4">
 </form>
 ```
 
@@ -46,10 +49,10 @@ an `Array` of either `String` names or `false` which indicates an array.
 Examples:
 
  * `user[name]` => `[ "user", "name" ]`
- * `user[password]` => `[ "user", "password" ]`
+ * `user.password` => `[ "user", "password" ]`
  * `tags[]` => `[ "tags", false ]`
  * `contacts[][first]` => `[ "contacts", false, "first" ]`
- * `contacts[][last]` => `[ "contacts", false, "last" ]`
+ * `contacts[].last` => `[ "contacts", false, "last" ]`
 
 
 ### square.set(obj, key, value)
@@ -68,7 +71,7 @@ square.set(o, "user[name]", "testuser");
 //   }
 // }
 
-square.set(o, "user[password]", "123456");
+square.set(o, "user.password", "123456");
 // => {
 //   user: {
 //     name: "testuser",
@@ -126,7 +129,7 @@ square.set(o, "contacts[][last]", "test2");
 //   ]
 // }
 
-square.set(o, "contacts[][first]", "test3");
+square.set(o, "contacts[].first", "test3");
 // => {
 //   user: {
 //     name: "testuser",
@@ -141,7 +144,7 @@ square.set(o, "contacts[][first]", "test3");
 //   ]
 // }
 
-square.set(o, "contacts[][last]", "test4");
+square.set(o, "contacts[].last", "test4");
 // => {
 //   user: {
 //     name: "testuser",
