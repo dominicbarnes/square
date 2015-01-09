@@ -1,7 +1,7 @@
 var assert = require("assert");
 
 try {
-  var serializer = require("square");
+  var serializer = require("squares");
 } catch (e) {
   var serializer = require("..");
 }
@@ -280,13 +280,14 @@ describe("serializer.set(o, key, value)", function () {
       a: [
         {
           b: [1, 2]
-      },
+        },
         {
           b: [3, 4]
-      },
+        },
         {
           b: [5, 6]
-      }]
+        }
+      ]
     });
   });
 

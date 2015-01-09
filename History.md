@@ -1,4 +1,7 @@
 
+# 0.2.0 (1/9/2015)
+  * order shouldnt change the values when setting.
+
 # 0.1.0 (1/8/2015)
  * adding some dot notation support (#1)
 

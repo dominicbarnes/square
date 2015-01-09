@@ -36,23 +36,24 @@ exports.get = function(o, key, value) {
 
 exports.set = function(o, key, value) {
   if (!o) o = {}; // create an empty object if needed
-
   return exports.parse(key).reduce(function(acc, branch, x, branches) {
     var next = branches[x + 1];
-    if (next === false) {
-      acc[branch] = acc[branch] || [];
-      return acc[branch];
-    } else if (next !== undefined) {
+    if (next !== undefined) {
       if (isArray(acc)) {
-        // only create a new branch when entire sub-branch has been explored
-        var i = acc.reduce(function(idx, obj) {
-          return branchesExist(obj, branches.slice(x+1)) ? idx + 1 : idx;
-        }, 0);
+        if (branch === false) {
+          // only create a new branch when entire sub-branch has been explored
+          var i = acc.reduce(function(idx, obj) {
+            return branchesExist(obj, branches.slice(x+1)) ? idx + 1 : idx;
+          }, 0);
+        } else {
+          var i = branch;
+        }
+
         acc[i] = acc[i] || {};
         return acc[i];
       } else {
         if (acc[branch] !== undefined) return acc[branch];
-        acc[branch] = typeof branch == 'number' ? [] : {};
+        acc[branch] = typeof next == 'number' || next === false ? [] : {};
         return acc[branch];
       }
     } else if (!branch) {
