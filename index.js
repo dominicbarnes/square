@@ -1,3 +1,5 @@
+var isArray = Array.isArray;
+
 exports.parse = function(name) {
   return name.split(/[\.\[]+/g).map(function(part) {
     // strip the "]" from the string, it's not needed after the split
@@ -12,6 +14,22 @@ exports.parse = function(name) {
     // otherwise, return string key name
     return part;
   });
+};
+
+exports.get = function(o, key, value) {
+  if (!o) o = {}; // create an empty object if needed
+
+  return exports.parse(key).reduce(function(acc, key) {
+    if (acc == undefined || key === false) {
+      return acc;
+    } else if (isArray(acc)) {
+      return isNumber(key) ? acc[key] : acc.map(function(v) { return v[key]; });
+    } else if (acc[key] !== undefined) {
+      return acc[key];
+    } else {
+      return undefined;
+    }
+  }, o);
 };
 
 exports.set = function(o, key, value) {
@@ -66,4 +84,8 @@ function branchesExist(o, branches) {
       return false;
     }
   });
+}
+
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
 }

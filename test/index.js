@@ -37,6 +37,88 @@ describe("serializer.parse(name)", function () {
   });
 });
 
+describe('serializer.get(o, key)', function() {
+  var fn = serializer.get;
+
+  it('should return undefined', function() {
+    var o = {};
+    var ret = fn(o, 'name');
+    assert(undefined == ret);
+  });
+
+  it('should not throw on deep arrays', function() {
+    var o = {};
+    var ret = fn(o, 'user.name');
+    assert(undefined == ret);
+  });
+
+  it('should support shallow objects', function() {
+    var o = { name: 'Matt' };
+    var ret = fn(o, 'name');
+    assert('Matt' == ret);
+  });
+
+  it('should support nested objects', function() {
+    var o = { user: { name: 'Matt' } };
+    var ret = fn(o, 'user.name');
+    assert('Matt' == ret);
+  });
+
+  it('should support nested objects using squares', function() {
+    var o = { user: { name: 'Matt' } };
+    var ret = fn(o, 'user[name]');
+    assert('Matt' == ret);
+  });
+
+  it('should support array notation', function() {
+    var o = { tags: ['a', 'b', 'c'] };
+    var ret = fn(o, 'tags[]');
+    assert.deepEqual(ret, ['a', 'b', 'c']);
+  });
+
+  it('array notation at the end should be optional', function() {
+    var o = { tags: ['a', 'b', 'c'] };
+    var ret = fn(o, 'tags');
+    assert.deepEqual(ret, ['a', 'b', 'c']);
+  });
+
+  it('should support indexes', function() {
+    var o = { tags: ['a', 'b', 'c'] };
+    var ret = fn(o, 'tags[0]');
+    assert.deepEqual(ret, 'a');
+  });
+
+  it('should support nested array notation', function() {
+    var o = { user: { tags: ['a', 'b', 'c'] } };
+    var ret = fn(o, 'user.tags[]');
+    assert.deepEqual(ret, ['a', 'b', 'c']);
+  });
+
+  it('array notation at the end of nested array should be optional', function() {
+    var o = { user: { tags: ['a', 'b', 'c'] } };
+    var ret = fn(o, 'user.tags');
+    assert.deepEqual(ret, ['a', 'b', 'c']);
+  });
+
+  it('should support an array of objects', function() {
+    var o = { tags: [{ name: 'a' }, { name: 'b' }, { name: 'c' }] };
+    var ret = fn(o, 'tags[].name');
+    assert.deepEqual(ret, ['a', 'b', 'c']);
+  });
+
+  it('should support arrays with indexs containing objects', function() {
+    var o = { tags: [{ name: 'a' }, { name: 'b' }, { name: 'c' }] };
+    var ret = fn(o, 'tags[1].name');
+    assert.deepEqual(ret, 'b');
+  });
+
+  it('should not break on sparse gets', function() {
+    var o = { tags: [{ name: 'a' }, { name: 'b', age: 32 }, { name: 'c' }] };
+    var ret = fn(o, 'tags[].age');
+    assert.deepEqual(ret, [undefined, 32, undefined]);
+  });
+});
+
 describe("serializer.set(o, key, value)", function () {
   var fn = serializer.set;
 

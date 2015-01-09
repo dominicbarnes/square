@@ -1,5 +1,5 @@
 {
-  "name": "dominicbarnes-square",
+  "name": "squares",
   "version": "0.1.0",
   "devDependencies": {
     "component": "^1.0.0-rc5",
