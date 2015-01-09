@@ -1,4 +1,7 @@
 
+# 0.1.0 (1/8/2015)
+ * adding some dot notation support (#1)
+
 # 0.0.4 (8/1/2014)
  * accounting for another "edge-case" (eg: `key[][deep][properties]`)
 
