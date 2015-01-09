@@ -23,7 +23,7 @@ exports.get = function(o, key, value) {
     if (acc === undefined || key === false) {
       return acc;
     } else if (isArray(acc)) {
-      return isNumber(key) ? acc[key] : acc.map(function(v) {
+      return typeof key == 'number' ? acc[key] : acc.map(function(v) {
         return v === undefined || v[key] === undefined ? undefined : v[key];
       });
     } else if (acc[key] !== undefined) {
@@ -38,41 +38,30 @@ exports.set = function(o, key, value) {
   if (!o) o = {}; // create an empty object if needed
 
   return exports.parse(key).reduce(function(acc, branch, x, branches) {
-    // while we are setting the various branches on our object
-    if (x + 1 < branches.length) {
-      // we need to see what key is coming next
-      var nextKey = branches[x + 1];
-
-      // when working with an array
-      if (branch === false) {
-        // first inspect the last item on the array
-        var temp = acc[acc.length - 1];
-
-        if (!temp || branchesExist(temp, branches.slice(x + 1))) {
-          temp = {};
-          acc.push(temp);
-        }
-
-        return temp;
+    var next = branches[x + 1];
+    if (next === false) {
+      acc[branch] = acc[branch] || [];
+      return acc[branch];
+    } else if (next !== undefined) {
+      if (isArray(acc)) {
+        // only create a new branch when entire sub-branch has been explored
+        var i = acc.reduce(function(idx, obj) {
+          return branchesExist(obj, branches.slice(x+1)) ? idx + 1 : idx;
+        }, 0);
+        acc[i] = acc[i] || {};
+        return acc[i];
       } else {
-        // when the branch does not already exist
-        if (!(branch in acc)) {
-          // depending on nextKey, we may be setting an array or an object
-          acc[branch] = (nextKey === false || typeof nextKey === "number") ? [] : {};
-        }
-
+        if (acc[branch] !== undefined) return acc[branch];
+        acc[branch] = typeof branch == 'number' ? [] : {};
         return acc[branch];
       }
-      // the last iteration just sets a simple property / appends to an array
+    } else if (!branch) {
+      acc.push(value);
     } else {
-      if (branch === false) {
-        acc.push(value);
-      } else {
-        acc[branch] = value;
-      }
-
-      return o;
+      acc[branch] = value;
     }
+
+    return o;
   }, o);
 };
 
@@ -86,8 +75,4 @@ function branchesExist(o, branches) {
       return false;
     }
   });
-}
-
-function isNumber(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
 }

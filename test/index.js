@@ -1,5 +1,10 @@
 var assert = require("assert");
-var serializer = require("square");
+
+try {
+  var serializer = require("square");
+} catch (e) {
+  var serializer = require("..");
+}
 
 describe("serializer.parse(name)", function () {
   var fn = serializer.parse;
@@ -229,7 +234,6 @@ describe("serializer.set(o, key, value)", function () {
     fn(o, "contacts[][bar]", "test2");
     fn(o, "contacts[][foo]", "test3");
     fn(o, "contacts[][bar]", "test4");
-
     assert.deepEqual(o, {
       contacts: [
         {
@@ -338,4 +342,20 @@ describe("serializer.set(o, key, value)", function () {
       }]
     });
   });
+
+  it('order should not matter', function() {
+    var o = {};
+    fn(o, 'a[].b', 1);
+    fn(o, 'a[].b', 2);
+    fn(o, 'a[].c', 3);
+
+    var j = {};
+    fn(j, 'a[].b', 1);
+    fn(j, 'a[].c', 3);
+    fn(j, 'a[].b', 2);
+
+    var expected = {"a":[{"b":1,"c":3},{"b":2}]};
+    assert.deepEqual(o, expected);
+    assert.deepEqual(j, expected);
+  })
 });
